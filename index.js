@@ -10,6 +10,7 @@ let eraseBtn = document.getElementById("erase-btn");
 let paintBtn = document.getElementById("paint-btn");
 let widthValue = document.getElementById("width-value");
 let heightValue = document.getElementById("height-value");
+let downloadBtn = document.getElementById("download-btn");
 
 let events = {
     mouse: {
@@ -109,4 +110,49 @@ updateHeightValue();
 
 window.addEventListener("mouseup", () => {
     draw = false;
+});
+
+
+
+
+
+
+downloadBtn.addEventListener("click", () => {
+    const rows = container.querySelectorAll(".gridRow");
+    if (rows.length === 0) {
+        alert("Önce bir grid oluşturmalısın!");
+        return;
+    }
+
+    const heightCount = rows.length;
+    const widthCount = rows[0].children.length;
+    const pixelSize = 20;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = widthCount * pixelSize;
+    canvas.height = heightCount * pixelSize;
+    const ctx = canvas.getContext("2d");
+
+    ctx.imageSmoothingEnabled = false;
+
+    rows.forEach((row, rowIndex) => {
+        const cols = row.querySelectorAll(".gridCol");
+        cols.forEach((col, colIndex) => {
+            // CSS dosyasını değil, sadece kullanıcının JS ile boyadığı rengi oku
+            const cellColor = col.style.backgroundColor;
+
+            // Eğer kullanıcı bu kutuyu boyamışsa ve silgiyle silmemişse çiz
+            if (cellColor && cellColor !== "transparent" && cellColor !== "") {
+                ctx.fillStyle = cellColor;
+                ctx.fillRect(colIndex * pixelSize, rowIndex * pixelSize, pixelSize, pixelSize);
+            }
+        });
+    });
+
+    const downloadLink = document.createElement("a");
+    downloadLink.download = "pixel-art.png";
+    downloadLink.href = canvas.toDataURL("image/png");
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 });
