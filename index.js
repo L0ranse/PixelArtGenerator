@@ -1,0 +1,1 @@
+alert("Welcome to the Art Generator! This tool allows you to create unique and beautiful pieces of art using AI technology. Please follow the instructions to get started and unleash your creativity. Enjoy the experience!");
