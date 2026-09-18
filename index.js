@@ -120,7 +120,7 @@ window.addEventListener("mouseup", () => {
 downloadBtn.addEventListener("click", () => {
     const rows = container.querySelectorAll(".gridRow");
     if (rows.length === 0) {
-        alert("Önce bir grid oluşturmalısın!");
+        alert("You have to create a grid first before downloading the pixel art.");
         return;
     }
 
