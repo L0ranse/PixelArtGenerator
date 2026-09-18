@@ -44,62 +44,44 @@ isTouchDevice();
 gridButton.addEventListener("click", () => {
     container.innerHTML = "";
     let count = 0;
-    for (let i = 0; i < gridHeight.value; i++)
-        count += 2;
-    let div = document.createElement("div");
-    div.classList.add("gridRow");
 
-    for (let j = 0; j < gridWidth.value; j++) {
-        count += 2;
-        let col = document.createEvent("div");
-        col.classList.add("gridCol");
-        col.setAttribute("id", `gridCol${count}`);
-        col.addEventListener(events[deviceType].down, () => {
-            draw = true;
-            if (erase) {
-                col.style.backgroundColor = "transparent";
-            } else {
-                col.style.backgroundColor = colorButton.value;
-            }
-        });
-        col.addEventListener(events[deviceType].move, () => {
-            if (draw) {
-                if (erase) {
-                    col.style.backgroundColor = "transparent";
-                } else {
-                    col.style.backgroundColor = colorButton.value;
+    for (let i = 0; i < Number(gridHeight.value); i++) {
+        let div = document.createElement("div");
+        div.classList.add("gridRow");
+
+        for (let j = 0; j < Number(gridWidth.value); j++) {
+            count++;
+            let col = document.createElement("div");
+            col.classList.add("gridCol");
+            col.setAttribute("id", `gridCol${count}`);
+            col.addEventListener(events[deviceType].down, () => {
+                draw = true;
+                col.style.backgroundColor = erase ? "transparent" : colorButton.value;
+            });
+            col.addEventListener(events[deviceType].move, (e) => {
+                if (draw) {
+                    col.style.backgroundColor = erase ? "transparent" : colorButton.value;
+                    let point = deviceType === "touch" ? e.touches[0] : e;
+                    checker(document.elementFromPoint(point.clientX, point.clientY));
                 }
-            }
-        });
-        col.addEventListener(events[deviceType].up, () => {
-            draw = false;
-        });
-        col.addEventListener(events[deviceType].move, (e) => {
-            let elementId = document.elementFromPoint(
-                !isTouchDevice() ? e.clientX : e.touches[0].clientX,
-                !isTouchDevice() ? e.clientY : e.touches[0].clientY,
-            );
-            checker(elementId);
-        });
-        col.addEventListener(events[deviceType].up, (e) => {
-            draw = false;
-        });
-        div.appendChild(col);
+            });
+            col.addEventListener(events[deviceType].up, () => {
+                draw = false;
+            });
+            div.appendChild(col);
+        }
+
+        container.appendChild(div);
     }
-    container.appendChild(div);
 });
 
-function checker(elementId) {
-    let gridColumns = document.querySelectorAll(".gridCol");
-    gridColumns.forEach((element) => {
-        if (elementId == element.id && draw) {
-            if (draw && !erase) {
-                element.style.backgroundColor = colorButton.value;
-            } else if (draw && erase) {
-                element.style.backgroundColor = "transparent";
-            }
-        }
-    });
+function checker(element) {
+    if (!element || !draw) return;
+
+    // Eğer imlecin altındaki eleman bir kareyse (gridCol) boya/sil
+    if (element.classList.contains("gridCol")) {
+        element.style.backgroundColor = erase ? "transparent" : colorButton.value;
+    }
 }
 
 
@@ -115,10 +97,16 @@ paintBtn.addEventListener("click", () => {
 gridWidth.addEventListener("input", () => {
     widthValue.innerHTML = gridWidth.value < 9 ? `0${gridWidth.value}` : gridWidth.value;
 });
-gridHeight.addEventListener("input", () => {
-    heightValue.innerHTML = gridHeight.value < 9 ? `0${gridHeight.value}` : gridHeight.value;
+const updateHeightValue = () => {
+    const height = gridHeight.valueAsNumber || Number(gridHeight.value);
+    heightValue.textContent = height < 9 ? `0${height}` : String(height);
+};
+
+// Keep the height control and its displayed value in sync while dragging.
+gridHeight.addEventListener("input", updateHeightValue);
+gridHeight.addEventListener("change", updateHeightValue);
+updateHeightValue();
+
+window.addEventListener("mouseup", () => {
+    draw = false;
 });
-window.onload = () => {
-    gridWidth.value = 0;
-    gridHeight.value = 0;
-}

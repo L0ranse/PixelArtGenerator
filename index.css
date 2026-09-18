@@ -111,10 +111,8 @@ input[type="color"]::-moz-color-swatch {
 
 .gridRow {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    max-width: 100%;
-    overflow-x: auto;
+    margin: 0;
+    padding: 0;
 }
 
 footer {
@@ -142,43 +140,29 @@ footer a:hover {
 }
 
 @media (max-width: 768px) {
-    body {
-        padding: 12px;
-        align-items: flex-start;
+    .gridCol {
+        height: 1em;
+        width: 1em;
     }
+}
 
-    .wrapper {
-        width: 100%;
-        padding: 28px 18px;
-        border-radius: 18px;
-    }
+.gridCol {
+    height: 1.2em;
+    /* yaklaşık 18-20px */
+    width: 1.2em;
+    /* yaklaşık 18-20px */
+    border: 1px solid #ddd;
+    /* videodaki hafif ızgara çizgisi */
+    box-sizing: border-box;
+    cursor: pointer;
+    background-color: #ffffff;
+}
 
-    label,
-    span {
-        font-size: 1.1rem;
-    }
-
-    .opt-wrapper {
-        margin-top: 22px;
-        margin-bottom: 22px;
-        gap: 12px;
-    }
-
-    button {
-        min-width: 0;
-        width: 100%;
-        font-size: 1rem;
-        padding: 12px 16px;
-    }
-
-    .gridRow {
-        gap: 6px;
-        margin-bottom: 6px;
-    }
-
-    .gridColor {
-        flex: 0 0 36px;
-        width: 36px;
-        height: 36px;
-    }
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    user-select: none;
 }
